@@ -21,3 +21,15 @@ lspconfig.gopls.setup {
     },
   },
 }
+
+-- Update the path to the jdtls executable
+local jdtls_path = 'path/to/jdt-language-server/bin/jdtls'
+
+-- Setup for jdtls
+lspconfig.jdtls.setup {
+    cmd = {jdtls_path},
+    root_dir = function(fname)
+        return util.root_pattern(".git", "pom.xml", ".editorconfig", ".clang-format")(fname)
+    end,
+}
+

@@ -47,5 +47,11 @@ local plugins = {
       vim.cmd [[silent! GoInstallDeps]]
     end,
   },
+  {
+    'mfussenegger/nvim-jdtls',
+    config = function()
+      require "custom.configs.java"
+    end,
+  },
 }
 return plugins
