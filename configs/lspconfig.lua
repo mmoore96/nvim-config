@@ -33,3 +33,5 @@ lspconfig.jdtls.setup {
     end,
 }
 
+-- Setup for TypeScript LSP
+require'lspconfig'.tsserver.setup {}
