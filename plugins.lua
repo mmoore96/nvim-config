@@ -12,6 +12,10 @@ local plugins = {
     opts = {
       ensure_installed = {
         "gopls",
+        "lua-language-server",
+        "gofumpt",
+        "goimports-reviser",
+        "golines"
       },
     },
   },
