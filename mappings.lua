@@ -1,5 +1,12 @@
 local M = {}
 
+M.lazygit = {
+  n = {
+    -- The line below sets up the mapping for LazyGit
+    ["<leader>gg"] = { "<cmd>LazyGit<CR>", "Open LazyGit" },
+  },
+}
+
 M.dap = {
   plugin = true,
   n = {
