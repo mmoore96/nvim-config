@@ -7,6 +7,13 @@ M.lazygit = {
   },
 }
 
+M.lazydocker = {
+  n = {
+    -- The line below sets up the mapping for LazyDocker
+    ["<leader>ld"] = { "<cmd>LazyDocker<CR>", "Open LazyDocker" },
+  },
+}
+
 M.harpoon = {
   n = {
     ["<leader>A"] = { function() require("harpoon"):list():append() end, "Harpoon: Add file" },
