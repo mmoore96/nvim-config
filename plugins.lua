@@ -8,6 +8,14 @@ local plugins = {
     },
   },
   {
+   "crnvl96/lazydocker.nvim",
+   event = "VeryLazy",
+   opts = {},  -- automatically calls `require("lazydocker").setup()`
+   dependencies = {
+     "MunifTanjim/nui.nvim",
+   },
+  },
+  {
     "theprimeagen/harpoon",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
