@@ -22,6 +22,9 @@ lspconfig.gopls.setup {
   },
 }
 
+-- Setup for Markdown LSP
+lspconfig.marksman.setup {}
+
 -- Update the path to the jdtls executable
 local jdtls_path = 'path/to/jdt-language-server/bin/jdtls'
 
