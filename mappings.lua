@@ -33,6 +33,13 @@ M.copilot = {
     },
 }
 
+-- Neoclip mappings
+M.neoclip = {
+  n = {
+    ["<leader>pr"] = { "<cmd>Telescope neoclip<CR>", "Open Neoclip" },
+  },
+}
+
 M.dap = {
   plugin = true,
   n = {
