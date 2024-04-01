@@ -40,6 +40,17 @@ M.neoclip = {
   },
 }
 
+-- Vim-tmux-navigator mappings
+M.vimtmuxnavigator = {
+  n = {
+    ["<C-h>"] = { "<cmd>TmuxNavigateLeft<CR>", "Navigate Left" },
+    ["<C-j>"] = { "<cmd>TmuxNavigateDown<CR>", "Navigate Down" },
+    ["<C-k>"] = { "<cmd>TmuxNavigateUp<CR>", "Navigate Up" },
+    ["<C-l>"] = { "<cmd>TmuxNavigateRight<CR>", "Navigate Right" },
+    ["<C-\\>"] = { "<cmd>TmuxNavigatePrevious<CR>", "Navigate Previous" },
+  },
+}
+
 M.dap = {
   plugin = true,
   n = {
