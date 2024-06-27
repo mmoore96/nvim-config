@@ -106,6 +106,19 @@ local plugins = {
       require("core.utils").load_mappings("dap")
     end
   },
+  { "rcarriga/nvim-dap-ui", dependencies = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"},
+    config = function()
+      require "custom.configs.dap"
+    end
+  },
+  { "folke/neodev.nvim",
+    opts = {},
+    config = function()
+      require("neodev").setup({
+        library = { plugins = { "nvim-dap-ui" }, types = true },
+      })
+    end
+  },
   {
     "dreamsofcode-io/nvim-dap-go",
     ft = "go",
@@ -142,7 +155,10 @@ local plugins = {
   },
   {
     'mfussenegger/nvim-jdtls',
+    dependencies = "mfussenegger/nvim-dap",
+    ft = { "java" },
     config = function()
+      -- require "custom.configs.lspconfig"
       require "custom.configs.java"
     end,
   },

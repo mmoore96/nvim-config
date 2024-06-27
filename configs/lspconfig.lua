@@ -3,6 +3,19 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require("lspconfig")
 local util = require "lspconfig/util"
+local dap = require('dap')
+
+-- Determine OS
+local home = os.getenv "HOME"
+if vim.fn.has "mac" == 1 then
+  WORKSPACE_PATH = home .. "/workspace/"
+  CONFIG = "mac"
+elseif vim.fn.has "unix" == 1 then
+  WORKSPACE_PATH = home .. "/workspace/"
+  CONFIG = "linux"
+else
+  print "Unsupported system"
+end
 
 lspconfig.gopls.setup {
   on_attach = on_attach,
@@ -26,16 +39,44 @@ lspconfig.gopls.setup {
 lspconfig.marksman.setup {}
 
 -- Update the path to the jdtls executable
-local jdtls_path = 'path/to/jdt-language-server/bin/jdtls'
-
--- Setup for jdtls
-lspconfig.jdtls.setup {
-    cmd = {jdtls_path},
-    root_dir = function(fname)
-        return util.root_pattern(".git", "pom.xml", ".editorconfig", ".clang-format")(fname)
-    end,
-}
-
+-- local jdtls_path = '/home/linuxbrew/.linuxbrew/bin/jdtls'
+-- local bundles = {
+--   vim.fn.glob(
+--     home .. "/.config/nvim/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar"
+--   ),
+-- }
+-- -- vim.list_extend(bundles, vim.split(vim.fn.glob(home .. "/.config/nvim/vscode-java-test/server/*.jar"), "\n"))
+-- dap.adapters.java = function(callback)
+--   -- FIXME:
+--   -- Here a function needs to trigger the `vscode.java.startDebugSession` LSP command
+--   -- The response to the command must be the `port` used below
+--   callback({
+--     type = 'server';
+--     host = '127.0.0.1';
+--     port = 5005;
+--   })
+-- end
+--   dap.configurations.java = {
+--     {
+--       type = 'java';
+--       request = 'attach';
+--       name = "Debug (Attach) - Remote";
+--       hostName = "127.0.0.1";
+--       port = 5005;
+--     },
+--   }
+-- -- Setup for jdtls
+-- lspconfig.jdtls.setup {
+--     cmd = {jdtls_path},
+--     root_dir = function(fname)
+--         return util.root_pattern(".git", "pom.xml", ".editorconfig", ".clang-format")(fname)
+--     end,
+--     -- on_attach = require('jdtls').setup_dap({ hotcodereplace = 'auto' }),
+--     ininit_options = {
+--     -- bundles = {},
+--     bundles = bundles,
+--   },
+-- }
 -- Setup for TypeScript LSP
 require'lspconfig'.tsserver.setup {}
 
