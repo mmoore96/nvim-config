@@ -70,6 +70,30 @@ M.dap = {
       "<cmd> DapToggleBreakpoint <CR>",
       "Add breakpoint at line"
     },
+    ["<leader>dc"] = {
+      "<cmd> DapContinue <CR>",
+      "Continue"
+    },
+    ["<leader>do"] = {
+      "<cmd> DapStepOver <CR>",
+      "Step over"
+    },
+    ["<leader>di"] = {
+      "<cmd> DapStepInto <CR>",
+      "Step into"
+    },
+    ["<leader>ds"] = {
+      "<cmd> DapStepOut <CR>",
+      "Step out"
+    },
+    ["<leader>dr"] = {
+      "<cmd> DapRestart <CR>",
+      "Restart"
+    },
+    ["<leader>dx"] = {
+      "<cmd> DapStop <CR>",
+      "Stop"
+    },
     ["<leader>dus"] = {
       function ()
         local widgets = require('dap.ui.widgets');
@@ -95,6 +119,18 @@ M.dap_go = {
         require('dap-go').debug_last()
       end,
       "Debug last go test"
+    }
+  }
+}
+
+M.dapui = {
+  plugin = false,
+  n = {
+    ["<leader>dui"] = {
+      function ()
+        require('dapui').open()
+      end,
+      "Toggle DAP UI"
     }
   }
 }
