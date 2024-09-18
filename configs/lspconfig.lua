@@ -26,7 +26,7 @@ lspconfig.gopls.setup {
 lspconfig.marksman.setup {}
 
 -- Update the path to the jdtls executable
-local jdtls_path = 'path/to/jdt-language-server/bin/jdtls'
+local jdtls_path = '/opt/homebrew/bin/jdtls'
 
 -- Setup for jdtls
 lspconfig.jdtls.setup {
