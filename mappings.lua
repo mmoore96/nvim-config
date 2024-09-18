@@ -1,5 +1,17 @@
 local M = {}
 
+-- Define the function to run the shell command
+local function GitDiffToClipboard()
+  vim.cmd('silent ! (echo -e "Can you write me a conventional commit message for the below git diff, ensure it is in markdown:\\n" && git diff --staged) | xclip -selection clipboard')
+end
+
+M.gitdiff = {
+  n = {
+    -- The line below sets up the mapping for the custom Git diff command
+    ["<leader>gd"] = { GitDiffToClipboard, "Copy Git diff to clipboard" },
+  },
+}
+
 M.lazygit = {
   n = {
     -- The line below sets up the mapping for LazyGit
