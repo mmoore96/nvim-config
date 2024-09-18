@@ -2,7 +2,19 @@ local M = {}
 
 -- Define the function to run the shell command
 local function GitDiffToClipboard()
-  vim.cmd('silent ! (echo -e "Can you write me a conventional commit message for the below git diff, ensure it is in markdown:\\n" && git diff --staged) | xclip -selection clipboard')
+  -- Detect the operating system
+  local uname = vim.loop.os_uname().sysname
+
+  -- Command based on the OS
+  local copy_command
+  if uname == "Darwin" then  -- macOS
+    copy_command = "pbcopy"
+  else  -- Assume Linux
+    copy_command = "xclip -selection clipboard"
+  end
+
+  -- Run the appropriate shell command
+  vim.cmd('silent ! (echo -e "Can you write me a conventional commit message for the below git diff, ensure it is in markdown:\\n" && git diff --staged) | ' .. copy_command)
 end
 
 M.gitdiff = {
