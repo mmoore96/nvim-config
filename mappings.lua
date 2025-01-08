@@ -20,7 +20,7 @@ end
 M.gitdiff = {
   n = {
     -- The line below sets up the mapping for the custom Git diff command
-    ["<leader>gd"] = { GitDiffToClipboard, "Copy Git diff to clipboard" },
+    ["<leader>gdc"] = { GitDiffToClipboard, "Copy Git diff to clipboard" },
   },
 }
 
