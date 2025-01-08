@@ -67,19 +67,20 @@ local function start_jdtls()
     end,
 
     init_options = {
-      bundles = {
-        '/.config/nvim/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar'
-      },
+      bundles = bundles,
+      -- bundles = {
+      --   '/.config/nvim/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar'
+      -- },
     },
     capabilities = handlers.capabilities,
 
     on_attach = function(client, bufnr)
       handlers.on_attach(client, bufnr)
       if client.name == "jdtls" then
-        require("which-key").register({
-          ["<leader>de"] = { "<cmd>DapContinue<cr>", "[JDLTS] Show debug configurations" },
-          ["<leader>ro"] = { "<cmd>lua require'jdtls'.organize_imports()<cr>", "[JDLTS] Organize imports" },
-        })
+        -- require("which-key").register({
+        -- { "<leader>de", "<cmd>DapContinue<cr>", desc = "[JDLTS] Show debug configurations" },
+        -- { "<leader>ro", "<cmd>lua require'jdtls'.organize_imports()<cr>", desc = "[JDLTS] Organize imports" },
+        -- })
         jdtls = require("jdtls")
         jdtls.setup_dap({ hotcodereplace = "auto" })
         jdtls.setup.add_commands()
