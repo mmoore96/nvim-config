@@ -78,7 +78,7 @@ lspconfig.marksman.setup {}
 --   },
 -- }
 -- Setup for TypeScript LSP
-require'lspconfig'.tsserver.setup {}
+require'lspconfig'.ts_ls.setup {}
 
 -- Setup for C# LSP
 local omnisharp_bin = '/path/to/omnisharp/OmniSharp.dll'
