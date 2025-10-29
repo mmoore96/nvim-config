@@ -1,0 +1,165 @@
+jdtls = require("jdtls")
+handlers = require("configs.handlers")
+
+share_dir = os.getenv("HOME") .. "/.local/share"
+project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+workspace_dir = share_dir .. "/eclipse/" .. project_name
+
+-- Set proper Java executable
+-- java_cmd = "/opt/java/jdk-21/bin/java"
+java_cmd = "/usr/lib/jvm/java-21-openjdk-amd64/bin/java"
+
+-- java_cmd = "java"
+mason_registry = require("mason-registry")
+
+-- vim.fn.glob Is needed to set paths using wildcard (*)
+bundles = {
+  vim.fn.glob(
+    mason_registry.get_package("java-debug-adapter"):get_install_path()
+      .. "/extension/server/com.microsoft.java.debug.plugin-*.jar"
+  ),
+}
+
+vim.list_extend(
+  bundles,
+  vim.split(
+    vim.fn.glob(mason_registry.get_package("java-test"):get_install_path() .. "/extension/server/*.jar"),
+    "\n"
+  )
+)
+
+jdtls_path = mason_registry.get_package("jdtls"):get_install_path()
+-- local java_debug_path = vim.fn.stdpath "data" .. "/mason/packages/java-debug-adapter/"
+local util = require("lspconfig").util
+
+local function find_java_root(fname)
+  local gradle_root = util.root_pattern("build.gradle")(fname)
+  if gradle_root then
+    return gradle_root
+  end
+  local maven_root = util.root_pattern("pom.xml")(fname)
+  if maven_root then
+    return maven_root
+  end
+  return util.root_pattern(".git")(fname)
+end
+
+local module_root = find_java_root(vim.fn.expand("%:p")) or vim.fn.getcwd()
+local project_name = vim.fn.fnamemodify(module_root, ":p:h:t")
+local workspace_dir = share_dir .. "/eclipse/" .. project_name
+-- Define the function to start jdtls
+local function start_jdtls()
+  config = {
+    cmd = {
+      java_cmd,
+      "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+      "-Dosgi.bundles.defaultStartLevel=4",
+      "-Declipse.product=org.eclipse.jdt.ls.core.product",
+      "-Dlog.protocol=true",
+      "-Dlog.level=ALL",
+      "-Xms512m",
+      "-Xmx2048m",
+      "--add-modules=ALL-SYSTEM",
+      "--add-opens",
+      "java.base/java.util=ALL-UNNAMED",
+      "--add-opens",
+      "java.base/java.lang=ALL-UNNAMED",
+      "-jar",
+      vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+      "-configuration",
+      jdtls_path .. "/config_linux",
+      "-data",
+      workspace_dir,
+    },
+    flags = {
+      debounce_text_changes = 150,
+      allow_incremental_sync = true,
+    },
+    --root_dir = require("jdtls.setup").find_root({"build.gradle", "pom.xml", ".git"}),
+    -- root_dir = jdtls.setup.find_root({ "build.gradle", ".metadata", ".git", "pom.xml" }),
+    -- root_dir = require("lspconfig").util.root_pattern("build.gradle", "pom.xml", ".git", ".project", ".settings")(vim.fn.getcwd()) or vim.fn.getcwd(),
+
+    on_init = function(client)
+      if client.config.settings then
+        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+      end
+    end,
+
+    init_options = {
+      bundles = bundles,
+      -- bundles = {
+      --   '/.config/nvim/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-*.jar'
+      -- },
+    },
+    capabilities = handlers.capabilities,
+
+    on_attach = function(client, bufnr)
+      handlers.on_attach(client, bufnr)
+      if client.name == "jdtls" then
+        -- require("which-key").register({
+        -- { "<leader>de", "<cmd>DapContinue<cr>", desc = "[JDLTS] Show debug configurations" },
+        -- { "<leader>ro", "<cmd>lua require'jdtls'.organize_imports()<cr>", desc = "[JDLTS] Organize imports" },
+        -- })
+        jdtls = require("jdtls")
+        jdtls.setup_dap({ hotcodereplace = "auto" })
+        jdtls.setup.add_commands()
+        -- Auto-detect main and setup dap config
+        require("jdtls.dap").setup_dap_main_class_configs({
+          -- config_overrides = {
+          --   vmArgs = "-Dspring.profiles.active=local",
+          -- },
+        })
+      end
+    end,
+    settings = {
+      java = {
+        signatureHelp = {
+          enabled = true,
+        },
+        saveActions = {
+          organizeImports = false,
+        },
+        completion = {
+          maxResults = 20,
+          favoriteStaticMembers = {
+            "org.hamcrest.MatcherAssert.assertThat",
+            "org.hamcrest.Matchers.*",
+            "org.hamcrest.CoreMatchers.*",
+            "org.junit.jupiter.api.Assertions.*",
+            "java.util.Objects.requireNonNull",
+            "java.util.Objects.requireNonNullElse",
+            "org.mockito.Mockito.*",
+          },
+        },
+        sources = {
+          organizeImports = {
+            starThreshold = 9999,
+            staticStarThreshold = 9999,
+          },
+        },
+        codeGeneration = {
+          toString = {
+            template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+          },
+        },
+      },
+    },
+  }
+  jdtls.start_or_attach(config)
+end
+
+-- Auto-attach jdtls when opening Java files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "java",
+  callback = function()
+    print("[jdtls] Autocmd triggered")
+    vim.keymap.set("n", "<Leader>q", function()
+      vim.diagnostic.setloclist()
+    end, { noremap = true, silent = true, buffer = true })
+    -- Ensure correct file type and syntax
+    vim.cmd("set filetype=java")
+
+    -- Start or attach jdtls
+    start_jdtls()
+  end,
+})
