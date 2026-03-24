@@ -1,0 +1,6 @@
+      vim.keymap.set("v", "<leader>av", function()
+        _99.visual()
+      end)
+      vim.keymap.set("v", "<leader>aa", function()
+        _99.visual_prompt {}
+      end, { desc = "99 visual prompt" })

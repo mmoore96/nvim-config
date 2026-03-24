@@ -1,3 +1,22 @@
+<DIRECTIONS>
+change these key maps
+</DIRECTIONS>
+<Context>
+You receive a selection in neovim that you need to replace with new code.
+The selection's contents may contain notes, incorporate the notes every time if there are some.
+consider the context of the selection and what you are suppose to be implementing
+<SELECTION_LOCATION>
+range(point(603,1),point(608,42))
+</SELECTION_LOCATION>
+<SELECTION_CONTENT>
+      vim.keymap.set("v", "<leader>9v", function()
+        _99.visual()
+      end)
+      vim.keymap.set("v", "<leader>99", function()
+        _99.visual_prompt {}
+      end, { desc = "99 visual prompt" })
+</SELECTION_CONTENT>
+<FILE_CONTAINING_SELECTION>
 return {
   {
     "stevearc/conform.nvim",
@@ -533,10 +552,9 @@ return {
       -- logging mechanisms within 99.  This is for more debugging purposes
       local cwd = vim.uv.cwd()
       local basename = vim.fs.basename(cwd)
-      vim.fn.mkdir(cwd .. "/tmp", "p")
       _99.setup {
         provider = _99.Providers.OpenCodeProvider, -- default: OpenCodeProvider
-        -- model = "github-copilot/claude-opus-4.5",
+        model = "github-copilot/claude-opus-4.5",
         logger = {
           level = _99.DEBUG,
           path = "/tmp/" .. basename .. ".99.debug",
@@ -604,6 +622,9 @@ return {
       vim.keymap.set("v", "<leader>9v", function()
         _99.visual()
       end)
+      vim.keymap.set("v", "<leader>99", function()
+        _99.visual_prompt {}
+      end, { desc = "99 visual prompt" })
       --- if you have a request you dont want to make any changes, just cancel it
       vim.keymap.set("v", "<leader>9s", function()
         _99.stop_all_requests()
@@ -805,3 +826,19 @@ Here is the staged diff:
 -- 	},
 -- },
 -- }
+</FILE_CONTAINING_SELECTION>
+
+</Context>
+
+<MustObey>
+NEVER alter any file other than TEMP_FILE.
+never provide the requested changes as conversational output. Return only the code.
+ONLY provide requested changes by writing the change to TEMP_FILE
+
+never attempt to read TEMP_FILE.
+It is purely for output.
+Previous contents, which may not exist, can be written over without worry
+After writing TEMP_FILE once you should be done.  Be done and end the session.
+
+</MustObey>
+<TEMP_FILE>/home/p079584/.config/nvim/lua/tmp/99-3553</TEMP_FILE>
